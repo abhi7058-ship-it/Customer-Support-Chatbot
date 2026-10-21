@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TechCare Admin Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: #222;
+        }
+
+        /* HEADER */
+        .header {
+            background: #111827;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .header p {
+            margin-top: 5px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .refresh-btn {
+            background: white;
+            color: #111827;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .refresh-btn:hover {
+            background: #e5e7eb;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* STATS */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* FILTERS */
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* TABLE */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f8fafc;
+            text-align: left;
+            padding: 15px;
+            font-size: 13px;
+            color: #475569;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* TICKET BUTTON */
+        .ticket-btn {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .ticket-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* STATUS */
+        .status-select {
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 550px;
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 22px;
+        }
+
+        .close-btn {
+            border: none;
+            background: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .close-btn:hover {
+            color: #111827;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 13px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .detail-value {
+            text-align: right;
+            color: #111827;
+            word-break: break-word;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 800px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1>TechCare Admin</h1>
+            <p>Customer Support Dashboard</p>
+        </div>
+
+        <button class="refresh-btn" onclick="loadRequests()">
+            ↻ Refresh
+        </button>
+    </div>
+
+
+    <div class="container">
+
+        <!-- STATS -->
+        <div class="stats">
+
+            <div class="stat-card">
+                <h3>Total Requests</h3>
+                <p id="totalCount">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Pending</h3>
+                <p id="pendingCount">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>In Progress</h3>
+                <p id="progressCount">0</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>Resolved</h3>
+                <p id="resolvedCount">0</p>
+            </div>
+
+        </div>
+
+
+        <!-- FILTERS -->
+        <div class="filters">
+
+            <input
+                type="text"
+                id="searchInput"
+                class="search"
+                placeholder="Search ticket, customer, email or order ID..."
+                oninput="renderRequests()"
+            >
+
+            <select id="statusFilter" onchange="renderRequests()">
+                <option value="all">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+            </select>
+
+            <select id="typeFilter" onchange="renderRequests()">
+                <option value="all">All Types</option>
+                <option value="refund">Refund</option>
+                <option value="return">Return</option>
+                <option value="cancel_order">Cancel Order</option>
+                <option value="order_status">Order Status</option>
+                <option value="human_support">Human Support</option>
+                <option value="payment">Payment</option>
+                <option value="general">General</option>
+            </select>
+
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Ticket</th>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Order ID</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody id="requestTableBody"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- TICKET DETAILS MODAL -->
+
+    <div class="modal" id="ticketModal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>Ticket Details</h2>
+
+                <button
+                    class="close-btn"
+                    onclick="closeModal()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <div id="ticketDetails"></div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let requests = [];
+
+
+        /* LOAD REQUESTS */
+
+        async function loadRequests() {
+
+            try {
+
+                const response = await fetch("/api/requests");
+
+                requests = await response.json();
+
+                renderRequests();
+
+            } catch (error) {
+
+                console.error("Error loading requests:", error);
+
+                alert("Could not load requests.");
+
+            }
+
+        }
+
+
+        /* FORMAT REQUEST TYPE */
+
+        function formatType(type) {
+
+            const types = {
+
+                refund: "Refund",
+
+                return: "Return",
+
+                cancel_order: "Cancel Order",
+
+                order_status: "Order Status",
+
+                human_support: "Human Support",
+
+                payment: "Payment",
+
+                general: "General"
+
+            };
+
+            return types[type] || type || "General";
+
+        }
+
+
+        /* UPDATE STATS */
+
+        function updateStats() {
+
+            document.getElementById("totalCount").textContent =
+                requests.length;
+
+            document.getElementById("pendingCount").textContent =
+                requests.filter(r => r.status === "Pending").length;
+
+            document.getElementById("progressCount").textContent =
+                requests.filter(r => r.status === "In Progress").length;
+
+            document.getElementById("resolvedCount").textContent =
+                requests.filter(r => r.status === "Resolved").length;
+
+        }
+
+
+        /* RENDER TABLE */
+
+        function renderRequests() {
+
+            updateStats();
+
+            const search =
+                document.getElementById("searchInput").value
+                .toLowerCase();
+
+            const status =
+                document.getElementById("statusFilter").value;
+
+            const type =
+                document.getElementById("typeFilter").value;
+
+            const filtered = requests.filter(request => {
+
+                const matchesSearch =
+                    String(request.ticketId || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    String(request.name || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    String(request.email || "")
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    String(request.orderId || "")
+                        .toLowerCase()
+                        .includes(search);
+
+
+                const matchesStatus =
+                    status === "all" ||
+                    request.status === status;
+
+
+                const matchesType =
+                    type === "all" ||
+                    request.type === type;
+
+
+                return matchesSearch &&
+                       matchesStatus &&
+                       matchesType;
+
+            });
+
+
+            /* NEWEST FIRST */
+
+            filtered.sort((a, b) => {
+
+                return new Date(b.createdAt) -
+                       new Date(a.createdAt);
+
+            });
+
+
+            const tableBody =
+                document.getElementById("requestTableBody");
+
+            tableBody.innerHTML = "";
+
+
+            if (filtered.length === 0) {
+
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7"
+                            style="text-align:center; padding:30px;">
+                            No requests found.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+
+            }
+
+
+            filtered.forEach(request => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                const ticketCell =
+                    document.createElement("td");
+
+
+                const ticketButton =
+                    document.createElement("button");
+
+                ticketButton.className =
+                    "ticket-btn";
+
+                ticketButton.textContent =
+                    request.ticketId || "No Ticket";
+
+                ticketButton.onclick = function () {
+
+                    showTicketDetails(request);
+
+                };
+
+
+                ticketCell.appendChild(ticketButton);
+
+
+                row.appendChild(ticketCell);
+
+
+                row.appendChild(ticketCell);
+
+const customerCell = document.createElement("td");
+customerCell.textContent = request.name || "-";
+row.appendChild(customerCell);
+
+const emailCell = document.createElement("td");
+emailCell.textContent = request.email || "-";
+row.appendChild(emailCell);
+
+const typeCell = document.createElement("td");
+typeCell.textContent = formatType(request.type);
+row.appendChild(typeCell);
+
+const orderCell = document.createElement("td");
+orderCell.textContent = request.orderId || "-";
+row.appendChild(orderCell);
+
+
+                /* STATUS */
+
+                const statusCell =
+                    document.createElement("td");
+
+
+                const statusSelect =
+                    document.createElement("select");
+
+                statusSelect.className =
+                    "status-select";
+
+
+                ["Pending", "In Progress", "Resolved"]
+                    .forEach(statusOption => {
+
+                        const option =
+                            document.createElement("option");
+
+                        option.value =
+                            statusOption;
+
+                        option.textContent =
+                            statusOption;
+
+                        if (request.status === statusOption) {
+
+                            option.selected = true;
+
+                        }
+
+                        statusSelect.appendChild(option);
+
+                    });
+
+
+                statusSelect.onchange = function () {
+
+                    updateStatus(
+                        request.id,
+                        this.value
+                    );
+
+                };
+
+
+                statusCell.appendChild(statusSelect);
+
+                row.appendChild(statusCell);
+
+
+                /* DATE */
+
+                const dateCell =
+                    document.createElement("td");
+
+                dateCell.textContent =
+                    request.createdAt
+                        ? new Date(request.createdAt)
+                            .toLocaleString()
+                        : "-";
+
+                row.appendChild(dateCell);
+
+
+                tableBody.appendChild(row);
+
+            });
+
+        }
+
+
+        /* ESCAPE HTML */
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* UPDATE STATUS */
+
+        async function updateStatus(id, status) {
+
+            try {
+
+                const response = await fetch(
+                    `/api/request/${id}`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            status: status
+                        })
+                    }
+                );
+
+
+                const result =
+                    await response.json();
+
+
+                if (!result.success) {
+
+                    alert(
+                        result.message ||
+                        "Could not update status."
+                    );
+
+                    return;
+
+                }
+
+
+                await loadRequests();
+
+            } catch (error) {
+
+                console.error(error);
+
+                alert("Server error.");
+
+            }
+
+        }
+
+
+        /* SHOW TICKET DETAILS */
+
+        function showTicketDetails(request) {
+
+            const details =
+                document.getElementById("ticketDetails");
+
+
+            details.innerHTML = `
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Ticket ID
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHtml(request.ticketId || "-")}
+                    </span>
+                </div>
+
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Customer
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHtml(request.name || "-")}
+                    </span>
+                </div>
+
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Email
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHtml(request.email || "-")}
+                    </span>
+                </div>
+
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Request Type
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHtml(formatType(request.type))}
+                    </span>
+                </div>
+
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Order ID
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHtml(request.orderId || "-")}
+                    </span>
+                </div>
+
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Status
+                    </span>
+
+                    <span class="detail-value">
+                        ${escapeHtml(request.status || "Pending")}
+                    </span>
+                </div>
+
+
+                <div class="detail-row">
+                    <span class="detail-label">
+                        Created
+                    </span>
+
+                    <span class="detail-value">
+                        ${
+                            request.createdAt
+                                ? new Date(request.createdAt)
+                                    .toLocaleString()
+                                : "-"
+                        }
+                    </span>
+                </div>
+
+            `;
+
+
+            document.getElementById("ticketModal").style.display =
+                "flex";
+
+        }
+
+
+        /* CLOSE MODAL */
+
+        function closeModal() {
+
+            document.getElementById("ticketModal").style.display =
+                "none";
+
+        }
+
+
+        /* CLOSE WHEN CLICKING OUTSIDE */
+
+        window.onclick = function(event) {
+
+            const modal =
+                document.getElementById("ticketModal");
+
+            if (event.target === modal) {
+
+                closeModal();
+
+            }
+
+        };
+
+
+        /* INITIAL LOAD */
+
+        loadRequests();
+
+    </script>
+
+</body>
+</html>
