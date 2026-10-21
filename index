@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Support</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="chat-container">
+
+        <!-- HEADER -->
+
+        <div class="chat-header">
+
+            <div class="header-icon">
+                🤖
+            </div>
+
+            <div class="header-info">
+                <h2>TechCare Support</h2>
+
+                <p>
+                    <span class="online-dot"></span>
+                    Online • Replies instantly
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- CHAT -->
+
+        <div class="chat-box" id="chatBox">
+
+            <!-- Welcome -->
+
+            <div class="welcome-section">
+
+                <div class="welcome-icon">
+                    👋
+                </div>
+
+                <h1>
+                    How can we help?
+                </h1>
+
+                <p>
+                    Choose an option below or type your question.
+                </p>
+
+            </div>
+
+
+            <!-- Initial Bot Message -->
+
+            <div class="bot-message">
+
+                Hello! 👋
+
+                <br>
+
+                Welcome to TechCare Support.
+
+                <br>
+
+                I'm here to help you with your questions.
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK SUPPORT -->
+
+        <div class="quick-buttons">
+
+            <button onclick="sendQuickMessage('I want help with my order')">
+                📦 Order
+            </button>
+
+            <button onclick="sendQuickMessage('I have a delivery question')">
+                🚚 Delivery
+            </button>
+
+            <button onclick="sendQuickMessage('I want a refund')">
+                💰 Refund
+            </button>
+
+            <button onclick="sendQuickMessage('I want to return my order')">
+                🔄 Return
+            </button>
+
+            <button onclick="sendQuickMessage('I have a payment problem')">
+                💳 Payment
+            </button>
+
+            <button onclick="sendQuickMessage('I want to talk to a human')">
+                👨‍💼 Human
+            </button>
+
+        </div>
+
+
+        <!-- INPUT -->
+
+        <div class="chat-input">
+
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Ask us anything..."
+                autocomplete="off"
+            >
+
+            <button onclick="sendMessage()">
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
